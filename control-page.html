@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lap Counter Control</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<style>
+body { font-family: Arial; text-align: center; font-size: 40px; margin-top: 50px; }
+button { font-size: 50px; margin: 10px; padding: 20px 40px; }
+</style>
+</head>
+<body>
+<h1>Lap Counter Control</h1>
+<div id="counter">Laps: 0 / 100</div>
+<button onclick="change(1)">+</button>
+<button onclick="change(-1)">−</button>
+<button onclick="reset()">Reset</button>
+
+<script>
+  // --- Firebase config ---
+  const firebaseConfig = {
+    apiKey: "AIzaSyBwERQ0OeBuELo04uA--2FT0Xu_MNSCZwQ",
+    authDomain: "device-streaming-98a72d7f.firebaseapp.com",
+    databaseURL: "https://device-streaming-98a72d7f-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "device-streaming-98a72d7f",
+    storageBucket: "device-streaming-98a72d7f.firebasestorage.app",
+    messagingSenderId: "663370018956",
+    appId: "1:663370018956:web:08c0db3310b1737b58cba9"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const maxLaps = 100;
+  const counterDiv = document.getElementById('counter');
+
+  function updateDisplay(val) {
+    counterDiv.textContent = `Laps: ${val} / ${maxLaps}`;
+  }
+
+  function change(amount) {
+    db.ref('laps').get().then(snapshot => {
+      let val = snapshot.val() || 0;
+      val = Math.max(0, Math.min(maxLaps, val + amount));
+      db.ref('laps').set(val);
+      updateDisplay(val);
+    });
+  }
+
+  function reset() {
+    db.ref('laps').set(0);
+    updateDisplay(0);
+  }
+
+  // Initial display
+  db.ref('laps').once('value').then(snap => updateDisplay(snap.val() || 0));
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lap Counter Display</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<style>
+body { background: transparent; color: white; font-family: Arial; text-align: center; font-size: 80px; }
+</style>
+</head>
+<body>
+<div id="counter">Laps: 0 / 100</div>
+<script>
+  // --- Firebase config (same as control page) ---
+  const firebaseConfig = {
+    apiKey: "AIzaSyBwERQ0OeBuELo04uA--2FT0Xu_MNSCZwQ",
+    authDomain: "device-streaming-98a72d7f.firebaseapp.com",
+    databaseURL: "https://device-streaming-98a72d7f-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "device-streaming-98a72d7f",
+    storageBucket: "device-streaming-98a72d7f.firebasestorage.app",
+    messagingSenderId: "663370018956",
+    appId: "1:663370018956:web:08c0db3310b1737b58cba9"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const maxLaps = 100;
+  const counterDiv = document.getElementById('counter');
+
+  db.ref('laps').on('value', snapshot => {
+    const val = snapshot.val() || 0;
+    counterDiv.textContent = `Laps: ${val} / ${maxLaps}`;
+  });
+</script>
+</body>
+</html>
